@@ -13,10 +13,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { saveProfileAsync } from "../store/profileSlice";
 import { useNavigate } from "react-router-dom";
-import type { RootState } from "../store";
+import type { RootState, AppDispatch } from "../store";
 
 const ProfileForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const existingProfile = useSelector((state: RootState) => state.profile.data);
 
@@ -103,7 +103,7 @@ const ProfileForm: React.FC = () => {
     };
 
     try {
-      const result = await dispatch(saveProfileAsync(form.name.trim(), payload));
+      const result: any = await dispatch(saveProfileAsync(form.name.trim(), payload) as any);
       
       if (result.success) {
         setSuccess(
@@ -113,7 +113,7 @@ const ProfileForm: React.FC = () => {
         );
         setTimeout(() => navigate("/profile"), 1000);
       } else {
-        setError((result as any).error || "Failed to save profile");
+        setError(result.error || "Failed to save profile");
       }
     } catch (err) {
       console.log(err);
