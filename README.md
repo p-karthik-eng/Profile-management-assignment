@@ -1,6 +1,15 @@
 # Profile Management Assignment
 
-A React-based profile management application with CRUD operations, state management, and mock API integration.
+A React-based profile management application with CRUD operations, state management using Redux Thunk, and mock API integration.
+
+## 🚀 Tech Stack
+
+- **Frontend**: React with TypeScript
+- **State Management**: Redux Toolkit with Redux Thunk
+- **UI Framework**: Material-UI (MUI)
+- **Routing**: React Router
+- **API Mocking**: json-server
+- **Development Tools**: Vite, Redux DevTools
 
 ---
 
@@ -58,8 +67,9 @@ npm run preview
 
 ### State Management & Persistence
 
-- Uses **Redux Toolkit** for centralized state management.
-- Profile data is persisted in **localStorage** to survive page reloads.
+- Uses **Redux Toolkit** with **Redux Thunk** for handling asynchronous operations and centralized state management.
+- Thunks are used for API calls, enabling clean separation of side effects from reducers.
+- Profile data is persisted in **localStorage** to survive page reloads, with Redux state being automatically rehydrated on app load.
 
 ### API Integration
 
