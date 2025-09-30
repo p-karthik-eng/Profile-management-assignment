@@ -41,7 +41,6 @@ const ProfileForm: React.FC = () => {
   };
 
   const validate = () => {
-    // Name validation
     if (!form.name || form.name.trim().length < 3) {
       return "Name must be at least 3 characters";
     }
@@ -54,7 +53,6 @@ const ProfileForm: React.FC = () => {
       return "Name can only contain letters, spaces, hyphens, and apostrophes";
     }
 
-    // Email validation (RFC 5322 compliant)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!form.email || !emailRegex.test(form.email)) {
       return "Please enter a valid email address";
@@ -63,27 +61,22 @@ const ProfileForm: React.FC = () => {
     if (form.email.length > 254) {
       return "Email address is too long";
     }
-
-    // Age validation - Industry standard
+    
     if (form.age) {
       const ageNum = Number(form.age);
       
-      // Check if it's a valid number
       if (isNaN(ageNum) || !Number.isInteger(ageNum)) {
         return "Age must be a whole number";
       }
       
-      // Minimum age (typically 13 for COPPA compliance in US, 16 for GDPR in EU)
       if (ageNum < 0) {
         return "Please enter a valid age";
       }
       
-      // Maximum reasonable age (oldest verified person was 122)
       if (ageNum > 120) {
         return "Please enter a valid age";
       }
-      
-      // Check for negative numbers
+    
       if (ageNum < 0) {
         return "Age cannot be negative";
       }
@@ -110,7 +103,6 @@ const ProfileForm: React.FC = () => {
     };
 
     try {
-      // @ts-ignore - Redux Thunk typing
       const result = await dispatch(saveProfileAsync(form.name.trim(), payload));
       
       if (result.success) {
