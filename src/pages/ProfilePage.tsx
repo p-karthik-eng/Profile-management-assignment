@@ -45,13 +45,10 @@ const ProfilePage: React.FC = () => {
     setDeleteDialogOpen(false);
     
     try {
-      // @ts-ignore - Redux Thunk typing
       const result = await dispatch(deleteProfileAsync(profile.id));
       
       if (result.success) {
         setSuccess("Profile deleted successfully ✅");
-        // User will stay on "No profile found" page after deletion
-        // No navigation needed - component will re-render showing no profile message
       } else {
         setErrorMessage((result as any).error || "Failed to delete profile");
       }
