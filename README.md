@@ -175,4 +175,4 @@ public/             # Static assets
 
 ---
 
-Feel free to contribute or raise issues on the GitHub repository.
+
