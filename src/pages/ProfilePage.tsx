@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store";
+import type { RootState, AppDispatch } from "../store";
 import { deleteProfileAsync } from "../store/profileSlice";
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,7 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProfilePage: React.FC = () => {
   const profile = useSelector((state: RootState) => state.profile.data);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,12 +45,12 @@ const ProfilePage: React.FC = () => {
     setDeleteDialogOpen(false);
     
     try {
-      const result = await dispatch(deleteProfileAsync(profile.id));
+      const result: any = await dispatch(deleteProfileAsync(profile.id) as any);
       
       if (result.success) {
         setSuccess("Profile deleted successfully ✅");
       } else {
-        setErrorMessage((result as any).error || "Failed to delete profile");
+        setErrorMessage(result.error || "Failed to delete profile");
       }
     } catch (err) {
       console.error(err);
