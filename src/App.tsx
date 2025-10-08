@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProfileForm, ProfilePage, PageNotFound } from "./pages";
 import Navbar from "./components/Navbar";
 import { useSelector } from "react-redux";
-import type { RootState } from "./store";
+import type { RootState } from "./Redux/store";
 
 function App() {
   const profile = useSelector((state: RootState) => state.profile.data);

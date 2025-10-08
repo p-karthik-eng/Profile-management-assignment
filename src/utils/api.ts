@@ -1,5 +1,5 @@
 const baseUrl = import.meta.env.VITE_API_URL;
-import type { Profile } from "../store/profileSlice";
+import type { Profile } from "../Redux/profileSlice";
 
 export async function loginUser(username: string, data: Profile) {
   const res = await fetch(

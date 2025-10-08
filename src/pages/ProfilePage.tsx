@@ -12,19 +12,24 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  Avatar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../store";
-import { deleteProfileAsync } from "../store/profileSlice";
+import type { RootState, AppDispatch } from "../Redux/store";
+import { deleteProfileAsync } from "../Redux/profileSlice";
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 
 const ProfilePage: React.FC = () => {
   const profile = useSelector((state: RootState) => state.profile.data);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
@@ -40,13 +45,13 @@ const ProfilePage: React.FC = () => {
 
   const confirmDelete = async () => {
     if (!profile?.id) return;
-    
+
     setDeleting(true);
     setDeleteDialogOpen(false);
-    
+
     try {
       const result: any = await dispatch(deleteProfileAsync(profile.id) as any);
-      
+
       if (result.success) {
         setSuccess("Profile deleted successfully ✅");
       } else {
@@ -63,18 +68,34 @@ const ProfilePage: React.FC = () => {
   if (!profile) {
     return (
       <Box
-        sx={{ minHeight: "80vh" }}
-        width={1}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          px: 2,
+        }}
       >
-        <Typography variant="h5">No profile found </Typography>
-        <Typography sx={{ mb: 2, mt: 1 }}>
-          You can create user by clicking the login button.
+        <Typography variant={isMobile ? "h5" : "h4"} sx={{ mb: 1, fontWeight: 700 }}>
+          No Profile Found
         </Typography>
-        <Button variant="contained" onClick={() => navigate("/profile-form")}>
+        <Typography sx={{ mb: 3, color: "gray" }}>
+          You can create a user by clicking the login button below.
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/profile-form")}
+          sx={{
+            background: "linear-gradient(135deg, #42A5F5, #1976D2)",
+            px: isMobile ? 3 : 4,
+            py: isMobile ? 1 : 1.5,
+            fontWeight: 600,
+            fontSize: isMobile ? "0.85rem" : "1rem",
+            "&:hover": { background: "linear-gradient(135deg, #1976D2, #1565C0)" },
+          }}
+        >
           Login
         </Button>
       </Box>
@@ -82,60 +103,107 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <Card sx={{ maxWidth: 500, margin: "2rem auto", boxShadow: 3 }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>
-          Profile Details
+    <Card
+      sx={{
+        maxWidth: isMobile ? "90%" : 450,
+        mx: "auto",
+        mt: isMobile ? 4 : 6,
+        borderRadius: 3,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+        overflow: "hidden",
+      }}
+    >
+      {/* Header with Avatar */}
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #42A5F5, #1976D2)",
+          color: "white",
+          py: isMobile ? 3 : 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar
+          sx={{
+            width: isMobile ? 60 : 80,
+            height: isMobile ? 60 : 80,
+            mb: 2,
+            bgcolor: "white",
+            color: "#1976D2",
+            fontSize: isMobile ? 24 : 32,
+          }}
+        >
+          {profile.name.charAt(0).toUpperCase()}
+        </Avatar>
+        <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: 700 }}>
+          {profile.name}
         </Typography>
+      </Box>
 
-        <Typography sx={{ mt: 1 }}>Name: {profile.name}</Typography>
-        <Typography>Email: {profile.email}</Typography>
-        <Typography sx={{ mb: 2 }}>
-          Age: {profile.age || "Not Provided"}
-        </Typography>
+      {/* Details Section */}
+      <CardContent sx={{ p: isMobile ? 2 : 3 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
+            Profile Details:
+          </Typography>
+          <Typography sx={{ color: "gray", fontSize: isMobile ? "0.85rem" : "0.95rem" }}>
+            <strong>Email:</strong> {profile.email}
+          </Typography>
+          <Typography sx={{ color: "gray", fontSize: isMobile ? "0.85rem" : "0.95rem" }}>
+            <strong>Age:</strong> {profile.age || "Not Provided"}
+          </Typography>
+        </Box>
 
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2,
+          }}
+        >
           <Button
             variant="outlined"
-            size="small"
             startIcon={<EditIcon />}
             onClick={() => navigate("/profile-form")}
+            sx={{
+              borderRadius: 2,
+              borderColor: "#1976D2",
+              color: "#1976D2",
+              fontWeight: 600,
+              flex: 1,
+              "&:hover": {
+                backgroundColor: "rgba(25,118,210,0.1)",
+                transform: "translateY(-2px)",
+              },
+            }}
           >
             Edit
           </Button>
           <Button
             variant="contained"
             color="error"
-            size="small"
             startIcon={<DeleteIcon />}
             onClick={handleDelete}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              flex: 1,
+              "&:hover": { transform: "translateY(-2px)" },
+            }}
           >
             Delete
           </Button>
-         
         </Box>
       </CardContent>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-      >
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Box sx={{ minWidth: 250 }}>
-            Are you sure you want to delete your profile? 
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ mb: 1, mr: 1 }}>
-          <Button
-            onClick={() => setDeleteDialogOpen(false)}
-            color="primary"
-            size="small"
-          >
-            Cancel
-          </Button>
-          <Button onClick={confirmDelete} color="error" size="small" autoFocus>
+        <DialogContent>Are you sure you want to delete your profile?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDelete} color="error" autoFocus>
             Delete
           </Button>
         </DialogActions>

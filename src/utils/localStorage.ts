@@ -1,4 +1,4 @@
-import type { Profile } from "../store/profileSlice";
+import type { Profile } from "../Redux/profileSlice";
 
 export const saveToLocalStorage = (profile: Profile) => {
   localStorage.setItem("profile", JSON.stringify(profile));
