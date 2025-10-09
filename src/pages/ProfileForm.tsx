@@ -13,9 +13,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { saveProfileAsync } from "../Redux/profileSlice";
+import { saveProfileAsync } from "../redux/profileSlice";
 import { useNavigate } from "react-router-dom";
-import type { RootState, AppDispatch } from "../Redux/store";
+import type { RootState, AppDispatch } from "../redux/store";
 import PersonIcon from "@mui/icons-material/Person";
 
 const ProfileForm: React.FC = () => {
@@ -119,7 +119,7 @@ const ProfileForm: React.FC = () => {
           overflow: "hidden",
         }}
       >
-        {/* Header with gradient */}
+        
         <Box
           sx={{
             background: "linear-gradient(135deg, #1976D2 0%, #42A5F5 100%)",
@@ -178,7 +178,7 @@ const ProfileForm: React.FC = () => {
               onChange={handleChange}
             />
 
-            {/* Buttons side by side */}
+            
             <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={2} mt={1}>
               <Button
                 type="submit"
@@ -217,7 +217,7 @@ const ProfileForm: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Snackbar for errors */}
+      
       <Snackbar
         open={!!error}
         autoHideDuration={4000}
@@ -228,7 +228,7 @@ const ProfileForm: React.FC = () => {
         </Alert>
       </Snackbar>
 
-      {/* Snackbar for success */}
+     
       <Snackbar
         open={!!success}
         autoHideDuration={3000}

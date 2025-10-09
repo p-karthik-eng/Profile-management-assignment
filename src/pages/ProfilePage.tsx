@@ -17,8 +17,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../Redux/store";
-import { deleteProfileAsync } from "../Redux/profileSlice";
+import type { RootState, AppDispatch } from "../redux/store";
+import { deleteProfileAsync } from "../redux/profileSlice";
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
