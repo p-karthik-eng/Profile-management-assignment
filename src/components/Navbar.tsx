@@ -19,8 +19,8 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../Redux/store";
-import { clearProfile } from "../Redux/profileSlice";
+import type { RootState } from "../redux/store";
+import { clearProfile } from "../redux/profileSlice";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
