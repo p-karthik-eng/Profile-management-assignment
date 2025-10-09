@@ -46,9 +46,10 @@ const Navbar: React.FC = () => {
       sx={{
         background: "linear-gradient(135deg, #1976D2 0%, #42A5F5 100%)",
         boxShadow: "0 4px 20px rgba(25, 118, 210, 0.2)",
-        borderRadius: "0 0 24px 24px",
+        borderRadius: "24px", // ✅ Rounded all corners including top
         mx: isMobile ? 0 : 2,
         mt: isMobile ? 0 : 2,
+        overflow: "hidden", // ✅ Ensures the AppBar respects the curve
       }}
     >
       <AppBar
@@ -57,7 +58,7 @@ const Navbar: React.FC = () => {
         sx={{
           backgroundColor: "transparent",
           boxShadow: "none",
-          borderRadius: "0 0 24px 24px",
+          borderRadius: "24px", // ✅ Apply curve inside AppBar too
         }}
       >
         <Container maxWidth="xl">
@@ -71,7 +72,7 @@ const Navbar: React.FC = () => {
               gap: isMobile ? 1 : 0,
             }}
           >
-            {/* Logo */}
+            {/* Left Section — Logo */}
             <Box
               sx={{
                 display: "flex",
@@ -80,11 +81,6 @@ const Navbar: React.FC = () => {
                 p: 1.5,
                 borderRadius: 4,
                 transition: "all 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "rgba(255,255,255,0.15)",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                },
               }}
               onClick={() => navigate("/")}
             >
@@ -135,11 +131,6 @@ const Navbar: React.FC = () => {
                     borderRadius: 6,
                     backgroundColor: "rgba(255,255,255,0.15)",
                     border: "2px solid rgba(255,255,255,0.3)",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      backgroundColor: "rgba(255,255,255,0.2)",
-                      transform: "translateY(-1px)",
-                    },
                   }}
                 >
                   <Typography
@@ -159,9 +150,9 @@ const Navbar: React.FC = () => {
                       width: isMobile ? 28 : 32,
                       height: isMobile ? 28 : 32,
                       border: "2px solid rgba(255,255,255,0.3)",
+                      transition: "transform 0.2s ease",
                       "&:hover": {
-                        backgroundColor: "rgba(255,255,255,0.25)",
-                        transform: "scale(1.05)",
+                        transform: "scale(1.05)", // subtle hover only scale
                       },
                     }}
                   >
@@ -169,6 +160,7 @@ const Navbar: React.FC = () => {
                   </IconButton>
                 </Box>
 
+                {/* Profile Menu */}
                 <Menu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
@@ -215,10 +207,6 @@ const Navbar: React.FC = () => {
                 sx={{
                   mt: isMobile ? 1 : 0,
                   backgroundColor: "rgba(255,255,255,0.15)",
-                  "&:hover": {
-                    backgroundColor: "rgba(255,255,255,0.25)",
-                    transform: "translateY(-2px)",
-                  },
                   borderRadius: 6,
                   px: 3,
                   py: 1.5,
