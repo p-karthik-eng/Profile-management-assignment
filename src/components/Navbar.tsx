@@ -46,10 +46,10 @@ const Navbar: React.FC = () => {
       sx={{
         background: "linear-gradient(135deg, #1976D2 0%, #42A5F5 100%)",
         boxShadow: "0 4px 20px rgba(25, 118, 210, 0.2)",
-        borderRadius: "24px", // ✅ Rounded all corners including top
-        mx: isMobile ? 0 : 2,
-        mt: isMobile ? 0 : 2,
-        overflow: "hidden", // ✅ Ensures the AppBar respects the curve
+        borderRadius: "24px",
+        mx: isMobile ? 1 : 2,
+        mt: isMobile ? 1 : 2,
+        overflow: "hidden",
       }}
     >
       <AppBar
@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
         sx={{
           backgroundColor: "transparent",
           boxShadow: "none",
-          borderRadius: "24px", // ✅ Apply curve inside AppBar too
+          borderRadius: "24px",
         }}
       >
         <Container maxWidth="xl">
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
               flexDirection: isMobile ? "column" : "row",
               justifyContent: "space-between",
               alignItems: isMobile ? "flex-start" : "center",
-              gap: isMobile ? 1 : 0,
+              gap: isMobile ? 1.2 : 0,
             }}
           >
             {/* Left Section — Logo */}
@@ -78,9 +78,9 @@ const Navbar: React.FC = () => {
                 display: "flex",
                 alignItems: "center",
                 cursor: "pointer",
-                p: 1.5,
-                borderRadius: 4,
-                transition: "all 0.3s ease",
+                p: 1,
+                borderRadius: 3,
+                transition: "none", // removed hover shade
               }}
               onClick={() => navigate("/")}
             >
@@ -103,14 +103,22 @@ const Navbar: React.FC = () => {
               <Box>
                 <Typography
                   variant={isMobile ? "subtitle1" : "h6"}
-                  sx={{ fontWeight: 700, fontSize: isMobile ? "1rem" : "1.25rem" }}
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: isMobile ? "1rem" : "1.25rem",
+                    lineHeight: 1.2,
+                  }}
                 >
                   Profile Management
                 </Typography>
                 {!isMobile && (
                   <Typography
                     variant="caption"
-                    sx={{ opacity: 0.9, fontSize: "0.75rem", textTransform: "uppercase" }}
+                    sx={{
+                      opacity: 0.9,
+                      fontSize: "0.75rem",
+                      textTransform: "uppercase",
+                    }}
                   >
                     Dashboard
                   </Typography>
@@ -126,16 +134,23 @@ const Navbar: React.FC = () => {
                     mt: isMobile ? 1 : 0,
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
-                    p: 1.5,
+                    gap: isMobile ? 1 : 1.5,
+                    p: 1,
                     borderRadius: 6,
                     backgroundColor: "rgba(255,255,255,0.15)",
                     border: "2px solid rgba(255,255,255,0.3)",
+                    width: isMobile ? "100%" : "auto",
+                    justifyContent: isMobile ? "space-between" : "flex-start",
                   }}
                 >
                   <Typography
                     variant="body2"
-                    sx={{ color: "white", fontWeight: 700 }}
+                    sx={{
+                      color: "white",
+                      fontWeight: 700,
+                      fontSize: isMobile ? "0.85rem" : "0.9rem",
+                      wordBreak: "break-word",
+                    }}
                   >
                     {profile.name}
                   </Typography>
@@ -152,7 +167,7 @@ const Navbar: React.FC = () => {
                       border: "2px solid rgba(255,255,255,0.3)",
                       transition: "transform 0.2s ease",
                       "&:hover": {
-                        transform: "scale(1.05)", // subtle hover only scale
+                        transform: "scale(1.05)",
                       },
                     }}
                   >
@@ -176,7 +191,13 @@ const Navbar: React.FC = () => {
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
-                  <Box sx={{ px: 2, py: 1.5, borderBottom: "1px solid rgba(0,0,0,0.1)" }}>
+                  <Box
+                    sx={{
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid rgba(0,0,0,0.1)",
+                    }}
+                  >
                     <Typography
                       variant="subtitle2"
                       sx={{ fontWeight: 600, color: "primary.main" }}
@@ -208,11 +229,12 @@ const Navbar: React.FC = () => {
                   mt: isMobile ? 1 : 0,
                   backgroundColor: "rgba(255,255,255,0.15)",
                   borderRadius: 6,
-                  px: 3,
-                  py: 1.5,
+                  px: isMobile ? 2 : 3,
+                  py: 1.2,
                   fontWeight: 600,
                   fontSize: isMobile ? "0.75rem" : "0.875rem",
                   border: "2px solid rgba(255,255,255,0.3)",
+                  width: isMobile ? "100%" : "auto",
                 }}
               >
                 Login
