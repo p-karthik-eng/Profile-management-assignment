@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/pages/ProfilePage.tsx (updated with shouldLoad flag to prevent re-loading after delete)
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -18,13 +19,15 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../redux/store";
-import { deleteProfileAsync } from "../redux/profileSlice";
+import { deleteProfileAsync, loadProfileAsync } from "../redux/profileSlice";  // Fixed import: loadProfileAsync instead of fetchProfileAsync
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProfilePage: React.FC = () => {
   const profile = useSelector((state: RootState) => state.profile.data);
+  const loading = useSelector((state: RootState) => state.profile.loading);
+  const error = useSelector((state: RootState) => state.profile.error);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -34,6 +37,14 @@ const ProfilePage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(true);  // New flag to control auto-loading
+
+  // Load profile from API if no local data on mount
+  useEffect(() => {
+    if (shouldLoad && !profile && !loading) {
+      dispatch(loadProfileAsync());
+    }
+  }, [dispatch, profile, loading, shouldLoad]);
 
   const handleDelete = () => {
     if (!profile || !profile.id) {
@@ -50,10 +61,13 @@ const ProfilePage: React.FC = () => {
     setDeleteDialogOpen(false);
 
     try {
-      const result: any = await dispatch(deleteProfileAsync(profile.id) as any);
+      const result = await dispatch(deleteProfileAsync(profile.id));  // Removed 'as any' and .unwrap()
 
       if (result.success) {
         setSuccess("Profile deleted successfully ✅");
+        setShouldLoad(false);  // Prevent re-loading after delete
+        // Optional: Immediately navigate to avoid any flash
+        // navigate("/profile-form");  // Or wherever your login/create flow starts
       } else {
         setErrorMessage(result.error || "Failed to delete profile");
       }
@@ -64,6 +78,24 @@ const ProfilePage: React.FC = () => {
       setDeleting(false);
     }
   };
+
+  // Show loading spinner while fetching
+  if (loading && !profile) {
+    return (
+      <Box
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>Loading profile...</Typography>
+      </Box>
+    );
+  }
 
   if (!profile) {
     return (
@@ -203,20 +235,20 @@ const ProfilePage: React.FC = () => {
         <DialogContent>Are you sure you want to delete your profile?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button onClick={confirmDelete} color="error" autoFocus>
-            Delete
+          <Button onClick={confirmDelete} color="error" autoFocus disabled={deleting}>
+            {deleting ? <CircularProgress size={20} /> : "Delete"}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Error Snackbar */}
+      {/* Error Snackbar (now also shows Redux errors) */}
       <Snackbar
-        open={!!errorMessage}
+        open={!!errorMessage || !!error}
         autoHideDuration={4000}
-        onClose={() => setErrorMessage("")}
+        onClose={() => { setErrorMessage(""); /* Clear Redux error if needed */ }}
       >
         <Alert severity="error" onClose={() => setErrorMessage("")}>
-          {errorMessage}
+          {errorMessage || error}
         </Alert>
       </Snackbar>
 
@@ -231,7 +263,7 @@ const ProfilePage: React.FC = () => {
         </Alert>
       </Snackbar>
 
-      {/* Loading Overlay */}
+      {/* Loading Overlay for delete */}
       {deleting && (
         <Box
           sx={{

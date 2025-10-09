@@ -1,5 +1,5 @@
 const baseUrl = import.meta.env.VITE_API_URL;
-import type { Profile } from "../Redux/profileSlice";
+import type { Profile } from "../redux/profileSlice";  // Changed to lowercase "redux"
 
 export async function loginUser(username: string, data: Profile) {
   const res = await fetch(
@@ -37,4 +37,18 @@ export async function deleteUser(userId: string) {
     throw new Error("Failed to delete user");
   }
   return await res.json();
+}
+
+export async function getProfile(): Promise<Profile | null> {
+  try {
+    const res = await fetch(baseUrl);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const users = await res.json();
+    return users.length > 0 ? users[0] : null;
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    return null;
+  }
 }

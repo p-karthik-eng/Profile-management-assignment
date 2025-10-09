@@ -1,8 +1,8 @@
+// src/redux/profileSlice.ts (updated to fix type mismatch in loadProfileAsync)
 import { loadFromLocalStorage, saveToLocalStorage, clearLocalStorage } from "../utils/localStorage";
-import { loginUser, deleteUser } from "../utils/api";
+import { loginUser, deleteUser, getProfile } from "../utils/api";
 import type { ThunkAction } from "redux-thunk";
 import type { RootState } from "./store";
-
 
 export interface Profile {
   id?: string;
@@ -17,19 +17,16 @@ export interface ProfileState {
   error: string | null;
 }
 
-
 const initialState: ProfileState = {
   data: loadFromLocalStorage(),
   loading: false,
   error: null,
 };
 
-
 export const SET_PROFILE = "profile/setProfile";
 export const CLEAR_PROFILE = "profile/clearProfile";
 export const SET_LOADING = "profile/setLoading";
 export const SET_ERROR = "profile/setError";
-
 
 interface SetProfileAction { type: typeof SET_PROFILE; payload: Profile }
 interface ClearProfileAction { type: typeof CLEAR_PROFILE }
@@ -41,7 +38,6 @@ export type ProfileAction =
   | ClearProfileAction
   | SetLoadingAction
   | SetErrorAction;
-
 
 const profileReducer = (state = initialState, action: ProfileAction): ProfileState => {
   switch (action.type) {
@@ -60,14 +56,12 @@ const profileReducer = (state = initialState, action: ProfileAction): ProfileSta
 
 export default profileReducer;
 
-
 export const setProfile = (profile: Profile): SetProfileAction => ({ type: SET_PROFILE, payload: profile });
 export const clearProfile = (): ClearProfileAction => ({ type: CLEAR_PROFILE });
 export const setLoading = (loading: boolean): SetLoadingAction => ({ type: SET_LOADING, payload: loading });
 export const setError = (error: string | null): SetErrorAction => ({ type: SET_ERROR, payload: error });
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, ProfileAction>;
-
 
 export const saveProfileAsync = (name: string, profileData: Profile): AppThunk<
   Promise<{ success: boolean; user?: Profile; error?: string }>
@@ -85,6 +79,36 @@ export const saveProfileAsync = (name: string, profileData: Profile): AppThunk<
     dispatch(setError(errorMessage));
     dispatch(setLoading(false));
     return { success: false, error: errorMessage };
+  }
+};
+
+export const loadProfileAsync = (): AppThunk<
+  Promise<{ success: boolean; user?: Profile; error?: string }>
+> => async (dispatch, getState) => {
+  const { profile } = getState();
+  // If local storage already has data, no need to fetch
+  if (profile.data) {
+    return { success: true, user: profile.data };
+  }
+
+  dispatch(setLoading(true));
+  dispatch(setError(null));
+  try {
+    const user = await getProfile();
+    if (user) {
+      dispatch(setProfile(user));
+      saveToLocalStorage(user);
+      dispatch(setLoading(false));
+      return { success: true, user };
+    } else {
+      dispatch(setLoading(false));
+      return { success: false, user: undefined, error: "No profile found" };
+    }
+  } catch (err: any) {
+    const errorMessage = err.message || "Failed to load profile";
+    dispatch(setError(errorMessage));
+    dispatch(setLoading(false));
+    return { success: false, user: undefined, error: errorMessage };
   }
 };
 
